@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Heart, User, ClipboardList } from "lucide-react";
 
@@ -16,7 +17,11 @@ export default function HealthBehaviorSurvey() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
 
-  const handleChange = (section: keyof FormDataState, field: string, value: string) => {
+  const handleChange = (
+    section: keyof FormDataState,
+    field: string,
+    value: string
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [section]: { ...prev[section], [field]: value },
@@ -24,10 +29,12 @@ export default function HealthBehaviorSurvey() {
   };
 
   const handleSection2Change = (questionId: string, value: string) => {
-    setFormData((prev) => ({ ...prev, section2: { ...prev.section2, [questionId]: value } }));
+    setFormData((prev) => ({
+      ...prev,
+      section2: { ...prev.section2, [questionId]: value },
+    }));
   };
 
-  // ✅ คำถามใหม่ 8 ข้อ พร้อมหมวด
   const behaviorQuestions = [
     {
       category: "ด้านการควบคุมอาหาร",
@@ -42,11 +49,20 @@ export default function HealthBehaviorSurvey() {
         "ปฏิบัติ 3 - 4 วัน/สัปดาห์",
         "ปฏิบัติ 5 - 7 วัน/สัปดาห์",
       ],
+      default: "ไม่ปฏิบัติ",
     },
     {
       category: "ด้านการออกกำลังกาย",
-      questions: ["คุณออกกำลังกายอย่างน้อย 30 นาที (เช่น เดิน วิ่ง เต้นแอโรบิค เล่นโยคะ) กี่วันต่อสัปดาห์?"],
-      options: ["ไม่ปฏิบัติ", "1 - 2 วัน/สัปดาห์", "3 - 4 วัน/สัปดาห์", "5 - 7 วัน/สัปดาห์"],
+      questions: [
+        "คุณออกกำลังกายอย่างน้อย 30 นาที (เช่น เดิน วิ่ง เต้นแอโรบิค เล่นโยคะ) กี่วันต่อสัปดาห์?",
+      ],
+      options: [
+        "ไม่ปฏิบัติ",
+        "1 - 2 วัน/สัปดาห์",
+        "3 - 4 วัน/สัปดาห์",
+        "5 - 7 วัน/สัปดาห์",
+      ],
+      default: "ไม่ปฏิบัติ",
     },
     {
       category: "ด้านการผ่อนคลายความเครียด",
@@ -54,17 +70,35 @@ export default function HealthBehaviorSurvey() {
         "คุณทำกิจกรรมผ่อนคลายความเครียด (เช่น เดินเล่น นั่งสมาธิ ฟังเพลง) กี่วันต่อสัปดาห์?",
         "คุณนอนหลับวันละ 7–8 ชั่วโมง กี่วันต่อสัปดาห์?",
       ],
-      options: ["ไม่ปฏิบัติ", "1 - 2 วัน/สัปดาห์", "3 - 4 วัน/สัปดาห์", "5 - 7 วัน/สัปดาห์"],
+      options: [
+        "ไม่ปฏิบัติ",
+        "1 - 2 วัน/สัปดาห์",
+        "3 - 4 วัน/สัปดาห์",
+        "5 - 7 วัน/สัปดาห์",
+      ],
+      default: "ไม่ปฏิบัติ",
     },
     {
       category: "ด้านการควบคุมการสูบบุหรี่",
       questions: ["คุณสูบบุหรี่ กี่วันต่อสัปดาห์?"],
-      options: ["ไม่สูบ", "1 - 2 วัน/สัปดาห์", "3 - 4 วัน/สัปดาห์", "5 - 7 วัน/สัปดาห์"],
+      options: [
+        "ไม่สูบ",
+        "1 - 2 วัน/สัปดาห์",
+        "3 - 4 วัน/สัปดาห์",
+        "5 - 7 วัน/สัปดาห์",
+      ],
+      default: "ไม่สูบ",
     },
     {
       category: "ด้านการควบคุมการดื่มสุรา",
       questions: ["คุณดื่มสุรา กี่วันต่อสัปดาห์?"],
-      options: ["ไม่ดื่ม", "1 - 2 วัน/สัปดาห์", "3 - 4 วัน/สัปดาห์", "5 - 7 วัน/สัปดาห์"],
+      options: [
+        "ไม่ดื่ม",
+        "1 - 2 วัน/สัปดาห์",
+        "3 - 4 วัน/สัปดาห์",
+        "5 - 7 วัน/สัปดาห์",
+      ],
+      default: "ไม่ดื่ม",
     },
   ];
 
@@ -74,134 +108,183 @@ export default function HealthBehaviorSurvey() {
     setResult("");
 
     try {
+      // URL ใหม่ล่าสุดของคุณ (อัปเดต 25 ธ.ค. 2025)
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycby1rU8FYvST49GUHrT6QGDr2lLoAo3QQEBDs-3iOsVHrnkh3pcIaPxzuthLy7KG8rcS/exec";
+        "https://script.google.com/macros/s/AKfycbwBzy2sZjcP7U-ypsGQiZFT-V9gKLtsPSit_JUUJCfCjmxv9c5v98woWz4WjHw5q-hh/exec";
 
       const flatData: Record<string, string> = {};
 
-      // แปลงข้อมูล section1
+      // ข้อมูลส่วนตัว
       Object.entries(formData.section1).forEach(([key, value]) => {
-        flatData[`section1_${key}`] = value;
+        flatData[`section1_${key}`] = value.trim();
       });
 
-      // แปลงข้อมูล section2
+      // คำตอบแบบสอบถาม
       Object.entries(formData.section2).forEach(([key, value]) => {
         flatData[`section2_${key}`] = value;
       });
 
-      // ตรวจสอบว่ามีข้อมูลหรือไม่
-      if (Object.keys(flatData).length === 0) {
-        setResult("❌ ไม่มีข้อมูลให้ส่ง");
-        setLoading(false);
-        return;
-      }
+      // ส่งข้อมูล (no-cors เพื่อหลีกเลี่ยง CORS)
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(flatData),
+      });
 
-      // ส่งข้อมูลไป Google Sheets
-      const urlSearchParams = new URLSearchParams(flatData);
-      const res = await fetch(scriptURL, { method: "POST", body: urlSearchParams });
+      setResult("✅ บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณที่ร่วมตอบแบบสอบถาม ❤️");
 
-      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-      const json = await res.json();
-
-      // แสดงผลลัพธ์ภาษาไทย
-      if (json.success) {
-        setResult("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
-        // เคลียร์ฟอร์มถ้าต้องการ
-        setFormData({ section1: { fullName: "", age: "", gender: "" }, section2: {} });
-      } else {
-        setResult("❌ เกิดข้อผิดพลาด: " + (json.error || "ไม่ทราบสาเหตุ"));
-      }
-    } catch (err: unknown) {
-      setResult("❌ การส่งข้อมูลล้มเหลว");
+      // รีเซ็ตฟอร์ม
+      setFormData({
+        section1: { fullName: "", age: "", gender: "" },
+        section2: {},
+      });
+    } catch (err) {
+      console.error("Error:", err);
+      setResult("❌ การส่งข้อมูลล้มเหลว กรุณาลองใหม่อีกครั้ง");
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
+        {/* หัวข้อหลัก */}
         <div className="text-center space-y-2 mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-red-500 to-pink-500 p-4 rounded-full">
+            <div className="bg-gradient-to-r from-red-500 to-pink-500 p-4 rounded-full shadow-lg">
               <Heart className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
             แบบประเมินพฤติกรรมสุขภาพ
           </h1>
-          <p className="text-gray-600">โปรดเลือกคำตอบที่ตรงกับพฤติกรรมของท่านมากที่สุด</p>
+          <p className="text-gray-600 text-lg">
+            โปรดกรอกข้อมูลและเลือกคำตอบที่ตรงกับพฤติกรรมของท่านมากที่สุด
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Section 1 */}
-          <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <User className="w-5 h-5 text-pink-500" /> ข้อมูลส่วนตัว
+          {/* ข้อมูลส่วนตัว */}
+          <div className="p-6 md:p-8 bg-white rounded-2xl shadow-lg">
+            <h2 className="text-2xl font-semibold flex items-center gap-3 mb-6">
+              <User className="w-6 h-6 text-pink-500" />
+              ข้อมูลส่วนตัว
             </h2>
-            {["fullName", "age", "gender"].map((field) => (
-              <div key={field} className="flex flex-col">
-                <label className="font-medium text-gray-700">
-                  {field === "fullName"
-                    ? "ชื่อ-สกุล"
-                    : field === "age"
-                      ? "อายุ (ปี)"
-                      : "เพศ"}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col">
+                <label className="font-medium text-gray-700 mb-1">
+                  ชื่อ-สกุล <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={formData.section1[field] || ""}
-                  onChange={(e) => handleChange("section1", field, e.target.value)}
-                  className="border rounded px-3 py-2"
+                  required
+                  value={formData.section1.fullName}
+                  onChange={(e) => handleChange("section1", "fullName", e.target.value)}
+                  className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  placeholder="ชื่อ นามสกุล"
                 />
               </div>
-            ))}
+
+              <div className="flex flex-col">
+                <label className="font-medium text-gray-700 mb-1">
+                  อายุ (ปี) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  max="120"
+                  value={formData.section1.age}
+                  onChange={(e) => handleChange("section1", "age", e.target.value)}
+                  className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  placeholder="เช่น 35"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="font-medium text-gray-700 mb-1">
+                  เพศ <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  value={formData.section1.gender}
+                  onChange={(e) => handleChange("section1", "gender", e.target.value)}
+                  className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                >
+                  <option value="">เลือกเพศ</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                  <option value="อื่นๆ">อื่นๆ / ไม่ระบุ</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          {/* Section 2: Questions */}
-          <div className="p-6 bg-white rounded-xl shadow-md space-y-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <ClipboardList className="w-5 h-5 text-pink-500" /> แบบสอบถามพฤติกรรมสุขภาพ
+          {/* แบบสอบถาม */}
+          <div className="p-6 md:p-8 bg-white rounded-2xl shadow-lg space-y-8">
+            <h2 className="text-2xl font-semibold flex items-center gap-3">
+              <ClipboardList className="w-6 h-6 text-pink-500" />
+              แบบสอบถามพฤติกรรมสุขภาพ
             </h2>
 
             {behaviorQuestions.map((group, groupIndex) => (
-              <div key={groupIndex} className="space-y-4 border-t pt-4">
-                <h3 className="font-semibold text-pink-600">{group.category}</h3>
-                {group.questions.map((q, qIndex) => (
-                  <div key={qIndex} className="flex flex-col space-y-1">
-                    <label className="text-gray-700">{q}</label>
-                    <select
-                      value={formData.section2[`q${groupIndex}_${qIndex}`] || ""}
-                      onChange={(e) =>
-                        handleSection2Change(`q${groupIndex}_${qIndex}`, e.target.value)
-                      }
-                      className="border rounded px-3 py-2"
-                    >
-                      <option value="">เลือกคำตอบ</option>
-                      {group.options.map((opt, optIndex) => (
-                        <option key={optIndex} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
+              <div
+                key={groupIndex}
+                className="space-y-6 pt-6 border-t border-gray-200 first:border-t-0 first:pt-0"
+              >
+                <h3 className="text-xl font-bold text-pink-600">{group.category}</h3>
+                {group.questions.map((q, qIndex) => {
+                  const questionKey = `q${groupIndex}_${qIndex}`;
+                  const defaultValue = group.default || group.options[0];
+
+                  return (
+                    <div key={qIndex} className="space-y-2">
+                      <label className="text-gray-800 font-medium">{q}</label>
+                      <select
+                        required
+                        value={formData.section2[questionKey] || defaultValue}
+                        onChange={(e) =>
+                          handleSection2Change(questionKey, e.target.value)
+                        }
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                      >
+                        {group.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
 
-          {/* Submit */}
-          <div className="text-center">
+          {/* ปุ่มส่ง */}
+          <div className="text-center space-y-6">
             <button
               type="submit"
-              className="bg-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-600 disabled:opacity-50"
               disabled={loading}
+              className="bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold text-xl px-10 py-5 rounded-full shadow-xl hover:from-pink-600 hover:to-red-600 disabled:opacity-60 disabled:cursor-not-allowed transform hover:scale-105 transition duration-300"
             >
-              {loading ? "กำลังส่ง..." : "ส่งข้อมูล"}
+              {loading ? "กำลังส่งข้อมูล..." : "ส่งข้อมูล"}
             </button>
-            {result && <p className="mt-4">{result}</p>}
+
+            {result && (
+              <p
+                className={`text-2xl font-bold animate-pulse ${
+                  result.startsWith("✅") ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {result}
+              </p>
+            )}
           </div>
         </form>
       </div>
